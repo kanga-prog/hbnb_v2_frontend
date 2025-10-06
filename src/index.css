@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles globaux personnalisés */
+body {
+  @apply bg-brandGray text-gray-800 font-sans m-0 antialiased;
+}
+
+/* Police pour le code */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Reset et optimisation typographique */
+*, *::before, *::after {
+  @apply box-border;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  @apply m-0;
+}
+
+/* Scrollbar esthétique */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-200;
+}
