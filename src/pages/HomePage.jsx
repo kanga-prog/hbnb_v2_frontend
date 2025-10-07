@@ -13,7 +13,8 @@ export default function HomePage() {
       .get("/places/")
       .then((res) => {
         console.log("Places récupérées:", res.data);
-        setPlaces(res.data);
+        const placesArray = Array.isArray(res.data) ? res.data : [];
+        setPlaces(placesArray);
         setLoading(false);
       })
       .catch((err) => {
