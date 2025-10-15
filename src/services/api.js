@@ -1,69 +1,41 @@
 // src/services/api.js
 import axios from "axios";
 
-// ===============================
-// 🔧 CONFIGURATION DE L’API
-// ===============================
 const API = axios.create({
   baseURL:
     process.env.REACT_APP_API_URL ||
     "https://hbnb-v2-backend.onrender.com/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-// ===============================
-// 🔐 INTERCEPTEUR JWT
-// (Ajoute automatiquement le token aux requêtes)
-// ===============================
+// 🔐 Intercepteur JWT + gestion FormData
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (config.data instanceof FormData) delete config.headers["Content-Type"];
   return config;
 });
 
-// ===============================
-// 🏠 CRÉATION D’UN LIEU (PLACE)
-// ===============================
+// 🏠 Création d’un lieu
 export const createPlace = async (placeData) => {
-  try {
-    const response = await API.post("/places", placeData);
-    return response.data;
-  } catch (error) {
-    console.error(
-      "❌ Erreur création du lieu :",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
+  const response = await API.post("/places", placeData);
+  return response.data;
 };
 
-// ===============================
-// 👤 UPLOAD AVATAR UTILISATEUR
-// ===============================
+// 📸 Upload image de lieu
+export const uploadPlaceImage = async (placeId, file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const res = await API.post(`/places/${placeId}/images`, formData);
+  return res.data;
+};
+
+// 👤 Upload avatar utilisateur
 export const uploadAvatar = async (userId, file) => {
-  try {
-    const formData = new FormData();
-    formData.append("avatar", file);
-
-    const res = await API.post(`/users/${userId}/avatar`, formData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-    console.error(
-      "❌ Erreur upload avatar :",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await API.post(`/users/${userId}/avatar`, formData);
+  return res.data;
 };
 
 export default API;
