@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
     const decodedUser = getCurrentUser();
     if (decodedUser) {
       // ⚡ On enrichit l’utilisateur depuis l’API
-      axios.get("http://127.0.0.1:5000/api/users/me", {
+      axios.get(`${API_BASE_URL}/users/me`, {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
         .then(res => setUser(res.data))
