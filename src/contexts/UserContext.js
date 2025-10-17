@@ -17,12 +17,13 @@ export const UserProvider = ({ children }) => {
     }
 
     API.get("/users/me")
-      .then(res => {
+      .then((res) => {
         const data = res.data;
-        // ✅ Corrige les liens d’avatar en HTTPS Render
-        if (data.avatar_url && data.avatar_url.startsWith("http://127.0.0.1:5000")) {
+
+        // 🌍 Force l’URL HTTPS production Render (aucune référence locale)
+        if (data.avatar_url) {
           data.avatar_url = data.avatar_url.replace(
-            "http://127.0.0.1:5000",
+            /^http:\/\/127\.0\.0\.1:5000/,
             "https://hbnb-v2-backend.onrender.com"
           );
         }
@@ -30,7 +31,7 @@ export const UserProvider = ({ children }) => {
         console.log("👤 Utilisateur récupéré :", data);
         setUser(data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("❌ Erreur récupération user :", err);
         setUser(decodedUser);
       })
