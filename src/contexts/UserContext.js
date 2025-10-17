@@ -1,7 +1,7 @@
 // src/contexts/UserContext.js
 import { createContext, useState, useEffect } from "react";
-import API from "../services/api"; // ✅ utilise axios avec JWT
-import { getCurrentUser } from "../utils/auth"; // ⚡ décodage token
+import API from "../services/api";
+import { getCurrentUser } from "../utils/auth";
 
 export const UserContext = createContext();
 
@@ -16,15 +16,23 @@ export const UserProvider = ({ children }) => {
       return;
     }
 
-    // ✅ Requête API sécurisée via instance axios centralisée
     API.get("/users/me")
       .then(res => {
-        console.log("👤 Utilisateur récupéré :", res.data);
-        setUser(res.data);
+        const data = res.data;
+        // ✅ Corrige les liens d’avatar en HTTPS Render
+        if (data.avatar_url && data.avatar_url.startsWith("http://127.0.0.1:5000")) {
+          data.avatar_url = data.avatar_url.replace(
+            "http://127.0.0.1:5000",
+            "https://hbnb-v2-backend.onrender.com"
+          );
+        }
+
+        console.log("👤 Utilisateur récupéré :", data);
+        setUser(data);
       })
       .catch(err => {
         console.error("❌ Erreur récupération user :", err);
-        setUser(decodedUser); // fallback minimal
+        setUser(decodedUser);
       })
       .finally(() => setLoading(false));
   }, []);
