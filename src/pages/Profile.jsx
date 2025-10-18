@@ -2,6 +2,7 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { uploadAvatar } from "../services/api";
+import { fixUrl } from "../utils/scripts"; // <-- importer fixUrl
 
 export default function Profile() {
   const { user, setUser } = useContext(UserContext);
@@ -31,7 +32,7 @@ export default function Profile() {
 
       {user.avatar && (
         <img
-          src={`http://127.0.0.1:5000${user.avatar}`}
+          src={fixUrl(user.avatar)} // <-- appliquer fixUrl ici
           alt="Avatar"
           width={150}
           className="mx-auto mb-4 rounded-full shadow"

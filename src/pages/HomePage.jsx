@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import PlaceCard from "../components/place/PlaceCard";
+import { fixUrl } from "../utils/scripts";
 
 export default function HomePage() {
   const [places, setPlaces] = useState([]);
@@ -14,7 +15,19 @@ export default function HomePage() {
       .then((res) => {
         console.log("Places récupérées:", res.data);
         const placesArray = Array.isArray(res.data) ? res.data : [];
-        setPlaces(placesArray);
+
+        // ✅ Corriger toutes les URLs locales ou relatives avant de les stocker
+        const fixedPlaces = placesArray.map((place) => {
+          if (place.images && Array.isArray(place.images)) {
+            place.images = place.images.map((img) => ({
+              ...img,
+              url: fixUrl(img.url),
+            }));
+          }
+          return place;
+        });
+
+        setPlaces(fixedPlaces);
         setLoading(false);
       })
       .catch((err) => {

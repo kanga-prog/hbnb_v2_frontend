@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import PlaceForm from "../components/place/PlaceForm";
 import API, { createPlace } from "../services/api";
+// ✅ Import de fixUrl depuis utils/scripts.js
+import { fixUrl } from "../utils/scripts";
 
 const CreatePlace = () => {
   const navigate = useNavigate();
@@ -36,15 +38,15 @@ const CreatePlace = () => {
         await Promise.all(
           data.images.map((img) => {
             if (img instanceof File) {
-              // UPLOAD LOCAL FILE
               const formData = new FormData();
               formData.append("file", img);
               return API.post(`/places/${placeId}/images`, formData);
             } else if (typeof img === "string") {
-              // URL EXISTANTE
-              return API.post(`/places/${placeId}/images`, { url: img });
+              // ✅ On corrige l'URL existante avant de l'envoyer
+              const fixedUrl = fixUrl(img);
+              return API.post(`/places/${placeId}/images`, { url: fixedUrl });
             }
-            return Promise.resolve(null); // ✅ Éviter warning ESLint
+            return Promise.resolve(null);
           })
         );
         console.log("IMAGES CRÉÉES ET LIÉES À LA PLACE !");

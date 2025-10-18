@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+// import { fixUrl } from "../utils/scripts"; // Décommenter si besoin pour les images
 
-function LoginPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -14,8 +15,6 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
-    
 
     try {
       await API.post("/auth/login", formData);
@@ -76,5 +75,3 @@ function LoginPage() {
     </div>
   );
 }
-
-export default LoginPage;

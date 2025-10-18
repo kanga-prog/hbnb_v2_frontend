@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import PlaceForm from "../components/place/PlaceForm";
+import { fixUrl } from "../utils/scripts";
 
 export default function EditPlace() {
   const { id } = useParams();
@@ -11,7 +12,17 @@ export default function EditPlace() {
 
   useEffect(() => {
     API.get(`/places/${id}/`)
-      .then((res) => setPlace(res.data))
+      .then((res) => {
+        // ✅ Corrige toutes les URLs locales ou relatives avant de les stocker
+        const fixedData = {
+          ...res.data,
+          images: res.data.images?.map((img) => ({
+            ...img,
+            url: fixUrl(img.url),
+          })),
+        };
+        setPlace(fixedData);
+      })
       .catch((err) => {
         console.error(err);
         alert("Impossible de charger le lieu.");
